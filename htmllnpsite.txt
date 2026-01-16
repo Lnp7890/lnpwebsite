@@ -1,658 +1,201 @@
+<!DOCTYPE html>
 <html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Wiersze – Piotr Baran</title>
+
+<style>
+:root {
+    --bg: #0f1220;
+    --panel: #1b1f3b;
+    --accent: #7aa2ff;
+    --text: #eaeaf0;
+    --muted: #a0a3c4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #0f1220, #14183a);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+}
+
+/* PANEL LEWY */
+.sidebar {
+    width: 260px;
+    background: var(--panel);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--accent);
+}
+
+.poem-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #262b55;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.poem-btn:hover {
+    background: #323a78;
+}
+
+.poem-btn.active {
+    background: var(--accent);
+    color: #0f1220;
+    font-weight: bold;
+}
+
+/* GŁÓWNA CZĘŚĆ */
+.content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.poem-box {
+    max-width: 900px;
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    animation: fadeIn 0.4s ease;
+}
+
+.poem-text {
+    white-space: pre-line;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.author {
+    color: var(--muted);
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+</head>
 
 <body>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Interaktywna Historia — Sezon 1 & 2</title>
-  <style>
-    :root {
-      --bg1: #071025;
-      --card: #071827;
-      --text: #e6eef6;
-      --muted: #a8b3c4;
-      --accent: #ef4444;
-      --btn: #0f1724;
-      --glass: rgba(255, 255, 255, 0.02);
-    }
 
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      font-family: Inter, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, var(--bg1), #04101d);
-    }
+<div class="sidebar">
+    <h2>📜 Wiersze</h2>
+    <button class="poem-btn" onclick="showPoem(1, this)">Wiersz 1</button>
+    <button class="poem-btn" onclick="showPoem(2, this)">Wiersz 2</button>
+    <button class="poem-btn" onclick="showPoem(3, this)">Wiersz 3</button>
+    <button class="poem-btn" onclick="showPoem(4, this)">Wiersz 4</button>
+    <button class="poem-btn" onclick="showPoem(5, this)">„Tuńczyk”</button>
+    <button class="poem-btn" onclick="showPoem(6, this)">„Jak mogłaś”</button>
+</div>
 
-    .wrap {
-      max-width: 1100px;
-      margin: 24px auto;
-      padding: 20px;
-    }
-
-    h1 {
-      color: var(--text);
-      text-align: center;
-      margin: 6px 0 18px;
-      font-size: 28px;
-    }
-
-    .controls {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 14px;
-    }
-
-    button.primary {
-      background: linear-gradient(180deg, #0f1724, #112131);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button.primary:hover {
-      transform: translateY(-3px)
-    }
-
-    .section {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 14px;
-      box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
-      border: 1px solid var(--glass);
-      margin-bottom: 16px;
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .season-btn {
-      background: #0b1220;
-      color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .season-btn:hover {
-      background: #0f1b2a
-    }
-
-    .chapter-btn {
-      background: #071427;
-      color: var(--text);
-      border-radius: 8px;
-      padding: 7px 10px;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.02);
-    }
-
-    .chapter-btn:hover {
-      background: #0b2133
-    }
-
-    #chapterContent {
-      background: linear-gradient(180deg, #071827, #061222);
-      color: var(--text);
-      padding: 18px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      line-height: 1.55;
-      max-height: 60vh;
-      overflow: auto;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .note {
-      color: var(--muted);
-      text-align: center;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    /* slot */
-    #slotMachine {
-      display: none;
-      text-align: center;
-      margin-top: 14px;
-    }
-
-    #slots {
-      font-size: 48px;
-      margin: 8px 0;
-    }
-
-    .red7 {
-      color: var(--accent);
-      font-weight: 800;
-      text-shadow: 0 2px 12px rgba(239, 68, 68, 0.15);
-    }
-
-    .small {
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: #0b1220;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      cursor: pointer;
-    }
-
-    .small:hover {
-      background: #0f1b2a
-    }
-
-    #slotMsg {
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    /* back */
-    #backBtn {
-      display: none;
-      margin: 18px auto 0;
-      display: block;
-      background: #172033;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      cursor: pointer;
-    }
-
-    /* responsive */
-    @media (max-width:720px) {
-      .wrap {
-        padding: 12px
-      }
-
-      h1 {
-        font-size: 22px
-      }
-
-      #slots {
-        font-size: 40px
-      }
-    }
-  </style>
-  </h>
-
-  <body>
-    <div class="wrap">
-
-      <h1>Twoja historia — Sezon 1 &amp; 2</h1>
-
-      <div class="section">
-        <div class="controls" id="mainMenu">
-          <button class="primary" id="badEndingBtn">Złe zakończenie</button>
-          <button class="primary" id="slotBtn">Jednoręki bandyta</button>
+<div class="content">
+    <div id="poemBox" class="poem-box">
+        <div class="poem-text">
+            Wybierz wiersz z listy po lewej stronie.
         </div>
-
-        <div id="seasonArea" class="row" style="display:none;"></div>
-        <div id="chapterArea" class="row" style="display:none; margin-top:12px;"></div>
-      </div>
-
-      <div id="chapterContent" style="display:none;"></div>
-
-      <div id="slotMachine" class="section" style="display:none;">
-        <div id="slots">🎰 🎰 🎰</div>
-        <div class="row" style="justify-content:center;">
-          <button class="small" id="drawBtn">Losuj</button>
-          <button class="small" id="clearBtn">Wyczyść</button>
-        </div>
-        <div id="slotMsg" class="note"></div>
-        <div class="note" style="margin-top:6px">Szanse: 🍋 30% • 🍊 25% • 🍇 20% • 🍒 15% • 💰 6% • 🛎️ 3% • 7 (czerwona) 1%</div>
-      </div>
-
-      <button id="backBtn">Powrót do menu głównego</button>
-
-      <div class="note">Wybierz „Złe zakończenie”, potem sezon i rozdział. Jednoręki bandyta to oddzielna funkcja.</div>
     </div>
+</div>
 
-    <script>
-      // ---- Dane (pełne teksty, bez zmian) ----
-      // Sezon 1 (12 rozdziałów) - treści dokładnie pobrane z Twoich wiadomości:
-      const season1 = {
-        title: "Sezon 1",
-        chapters: {
-          1: {
-            title: "Krople deszczu",
-            text: `Lnp stał na ciemnym chodniku, gdy nagle zaczął padać deszcz. Nie przejął się tym ani trochę — zawsze lubił, gdy krople spływały mu po włosach. Mżawka kropiła delikatnie, rytmicznie, aż w końcu przemieniła się w ulewę.
-W oddali dostrzegł błąkającego się czarnego kota, który przemknął między rozświetlonymi, migoczącymi w deszczu latarniami. Chwilę później jego uwagę przyciągnęła huśtawka. Usiadł na niej i zaczął się bujać coraz wyżej, aż miał wrażenie, że niemal sięga czubków drzew.
-Kiedy wracał do domu po zmroku, przeszedł przez puste boisko i ciche osiedle bloków. Wreszcie położył się do łóżka, a zasypiając pomyślał tylko: tak właśnie minął ten dzień.`
-          },
-          2: {
-            title: "Świat nie jest piękny",
-            text: `Obudził się o poranku, gdy za oknem ćwierkały ptaki. Wspominał jeszcze wczorajsze krople mżawki — jak pięknie wtedy wyglądał świat. Po krótkich ćwiczeniach przyszła pora szkoły. Po powtórzeniu materiału usiadł do sprawdzianu, a później, wychodząc z klasy, zauważył na schodach swojego znajomego, Iwo. Ten siedział znudzony i zapatrzony w przestrzeń.
-Podszedł do niego i zaczęli rozmawiać, ale nagle rozległ się dzwonek tak głośny, że aż bolały uszy. Nadszedł czas lekcji języka polskiego. Trzeba było napisać wiersz. Bohater jednak nie potrafił — kartka pozostała pusta, a w końcu podarł ją z frustracją.
-— Nie umiem — wyszeptał.
-Wtedy przypomniał sobie mżawkę. Zaczął pisać o niej, i nagle słowa popłynęły same. Wiersz, który powstał, był najpiękniejszy, jaki kiedykolwiek widział. Jednak nauczyciel ocenił go na „czwórkę” — przeciętnie. Od tej chwili tamten dzień stracił swój blask i już nigdy nie wydawał się tak samo piękny.`
-          },
-          3: {
-            title: "Sny mówią prawdę",
-            text: `Wracał do domu, gdy z gałęzi spadła na niego kropla wczorajszej mżawki. Od razu przypomniał sobie tamten wieczór — tak piękny, tak pełen ciszy i światła.
-Wkrótce dotarł do domu, lecz nagle zadzwonił telefon. Cztery nieodebrane połączenia. Na ekranie pojawiła się wiadomość: „Kiedy idziesz na orlik?”
-Chwilę później był już na boisku. Grał, śmiał się i bawił znakomicie. Wracając do domu, znów pomyślał: „To był piękny wieczór… prawie tak piękny, jak tamta mżawka.” Myśl ta powracała wciąż i wciąż, aż wreszcie zasnął.
-Spał głęboko, aż do czwartej nad ranem. Wtedy przyśniło mu się coś niezwykłego. W śnie pojawiło się jasne światło, które wyszeptało:
-„To są najpiękniejsze chwile twojego życia.”`
-          },
-          4: {
-            title: "Bez sens",
-            text: `Kiedy się obudził, przypomniał sobie sen o świetle. Choć jego głos wciąż brzmiał w głowie, postanowił go zignorować.
-W szkole od razu poczuł, że coś się zmieniło. Nic nie było już takie samo. Nikt nie chciał z nim rozmawiać, a Iwo w ogóle się nie pojawił. Przygnębiony, zaszył się w ulubionym miejscu — sali zwanej chill outem. Kiedyś kochał tę przestrzeń, teraz jednak wydawała mu się zupełnie inna. Szara, pusta, jakby ktoś odebrał jej barwy i tchnął w nią coś złego.
-Po kilku bezbarwnych lekcjach wyszedł ze szkoły. Świat wokół wyglądał obco. Barwy zniknęły, a to, co dawniej tętniło życiem, teraz zdawało się milczeć. Wszystko zamknęło się w ciszy bez światła i kolorów.`
-          },
-          5: {
-            title: "Mieszanka emocji",
-            text: `Obudził się z bólem gardła i mięśni. Czuł się osłabiony, jakby ciało próbowało wysłać mu jakiś sygnał. Nie poszedł więc do szkoły, lecz spędzał czas bez celu, nudząc się i snując myślami.
-Dopiero około czternastej przypomniał sobie, że za dwie godziny przyjedzie jego nowy piesek.
-— A no tak! Dzisiaj sobota! — krzyknął i roześmiał się szczerze.
-Radość jednak trwała krótko, niespełna ćwierć dnia. Gdy nadeszła noc, grał jeszcze z przyjaciółmi, lecz w pewnym momencie uświadomił sobie coś nieuchronnego: to była ostatnia taka gra. Od jutra czekała go nauka, obowiązki, codzienność.
-Game over.`
-          },
-          6: {
-            title: "Szalik",
-            text: `Po dniu spędzonym na nauce zasnął wcześnie. Nad ranem obudził go dźwięk domofonu — przyszła paczka. Otworzył ją i zobaczył swój wymarzony prezent: szalik ukochanego klubu, Ruchu Chorzów.
-Z uśmiechem wybiegł przed dom i ruszył w stronę szkoły. Po drodze jednak zatrzymał go Mateusz, znany w okolicy z handlu narkotykami. Rozmowa zaczęła się niewinnie, od tematów o regionie, lecz w powietrzu wisiało coś niepokojącego.
-Nagle pojawił się Iwo — dawny znajomy Piotrka. Bez wahania spławił Mateusza, który zniknął w cieniu bloków. Piotrek poczuł ulgę, a razem z Iwem ruszyli dalej. Wkrótce natrafili na grupę kibiców Ruchu, którzy z uznaniem spojrzeli na jego nowy szalik i pochwalili go.
-Czas płynął szybko, aż w końcu zabrzmiał dzwonek na pierwszą lekcję. Wtedy Piotrek po raz pierwszy poczuł w sobie ciężar przeczucia. Wiedział, że przed nim nie będą łatwe lata.`
-          },
-          7: {
-            title: "Gieksa",
-            text: `Piotrek wracał ze szkoły razem z kolegą z klasy, Hubertem. Ulica była niemal pusta, cicha i dziwnie odległa od codziennego zgiełku.
-Nagle napotkali grupę kiboli GKS-u, zwanych Gieksiarzami. Ich spojrzenia od razu spoczęły na szaliku Ruchu Chorzów, który wisiał na szyi Piotrka niczym znak rozpoznawczy. W powietrzu zawisło napięcie, zaczęły się krzyki, pretensje, a atmosfera gęstniała z każdą chwilą.
-Ostatecznie Gieksiarze odeszli, ale Piotrek i Hubert szybko zorientowali się, że są śledzeni. Kroki za plecami brzmiały coraz głośniej.
-W tej pustej, opustoszałej okolicy, w cieniu drzew, Piotrek poczuł, jak coś w nim pęka. Sięgnął do kieszeni. Chłodny metal w dłoni sprawił, że serce przyspieszyło. W jednej chwili rzeczywistość zmieniła się w koszmar — krzyk, szarpanina, chaos. A potem… cisza.
-Wstrząśnięci i przerażeni, Piotrek i Hubert ukryli to, co się wydarzyło, w gęstwinie lasu. Obaj wiedzieli, że od tej chwili nic nie będzie już takie samo. Od tej granicy nie było powrotu.`
-          },
-          8: {
-            title: "Początki",
-            text: `Z rana wciąż czuł ciężar tego, co zrobił. Myśli o wydarzeniach sprzed kilku godzin nie dawały mu spokoju, lecz zamiast szukać odpowiedzi, postanowił uciec jeszcze dalej.
-Obok sklepu rowerowego spotkał Dominika — lokalnego dilera, znanego z tego, że zawsze miał coś „na sprzedaż”. Piotrek wszedł w rozmowę i wkrótce dokonał pierwszego zakupu. Chciał zagłuszyć sumienie, odsunąć od siebie obrazy, które powracały za każdym razem, gdy zamykał oczy.
-Pod wpływem nowych bodźców poczuł się dziwnie silny, jakby jego ciało i umysł były w stanie znieść więcej, niż powinny. Poszedł więc na lekcje, jak gdyby nigdy nic. Nikt nie zauważył, co działo się w środku — lekcje minęły jak w półśnie.
-Po szkole wrócił do Dominika. Tym razem nie po to, by kupić, lecz by zapytać o coś więcej.
-— Masz dla mnie robotę? — spytał cicho, niemal szeptem.
-Dominik uśmiechnął się krzywo. — Oczywiście. Dostaniesz dwadzieścia procent z tego, co sprzedasz.
-Piotrek skinął głową. Czuł, że przekracza kolejną granicę. Zadowolony z pierwszego zarobku, zaczął ostrożnie handlować. Każda moneta w jego dłoni wydawała się cięższa niż wszystkie, które kiedykolwiek wcześniej trzymał.`
-          },
-          9: {
-            title: "Interesy i nie tylko",
-            text: `Interesy szły coraz lepiej. Piotrek sprzedawał więcej niż kiedykolwiek — najpierw Iwo, potem kolejnym znajomym ze szkoły, aż w końcu klientela zaczęła sama do niego przychodzić. Pieniądze rosły w kieszeni, a wraz z nimi poczucie, że wreszcie ma kontrolę nad swoim życiem.
-Ale im wyżej się wspinał, tym więcej budził wrogów.
-Pewnego wieczoru, gdy stał pod blokiem, drogę zagrodził mu Mateusz. Jego spojrzenie było zimne, pełne gniewu.
-— Myślisz, że możesz wejść na mój teren? — warknął. — To ja tu rządzę, nie ty.
-Piotrek nie cofnął się ani o krok. W jego oczach nie było już lęku, tylko determinacja. Słowa zamieniły się w przepychanki, a przepychanki w coś, czego nie dało się już zatrzymać. W ciemności rozległ się stłumiony krzyk, a Mateusz upadł na ziemię. Cisza zapadła gwałtownie, gęsta jak dym.
-Piotrek patrzył na swoje drżące dłonie i wiedział, że właśnie przekroczył kolejną granicę, której nie da się cofnąć.
-Kiedy następnego dnia spotkał się z Dominikiem, atmosfera była ciężka. Ten długo patrzył mu w oczy, jakby próbował zajrzeć do samego wnętrza.
-— Mateusz był mój — powiedział powoli, zimnym tonem. — Nie podoba mi się to, co zrobiłeś.
-Piotrek spuścił wzrok. Serce waliło mu jak młot.
-Nagle Dominik parsknął krótkim, nieprzyjemnym śmiechem. — Ale wiesz co? Masz w sobie coś, czego tamtemu brakowało. Odwagę. Zacięcie. A może po prostu szaleństwo. — Zbliżył się o krok. — Wybaczam ci. Ale pamiętaj… drugi raz ci się nie upiecze.
-Piotrek skinął głową. Czuł, że właśnie został przyjęty głębiej w krąg, z którego nie ma odwrotu.`
-          },
-          10: {
-            title: "Tylko nie Kacper",
-            text: `Piotrek nie był już zwykłym sprzedawcą. Od tamtego momentu stał się wspólnikiem Dominika. Razem planowali interesy, dzielili zyski i decyzje. Piotrek czuł w sobie dziwne poczucie władzy — mieszaninę adrenaliny i odpowiedzialności, której nigdy wcześniej nie zaznał.
-Wkrótce do ich kręgu dołączył Kacper — młody, pewny siebie chłopak, którego Dominik polecił jako solidnego „pracownika”. Kacper szybko wpasował się w zespół, ucząc się zasad, zyskując zaufanie Piotrka i Dominika. Wszystko szło sprawnie, a interes rozrastał się szybciej niż ktokolwiek mógł przypuszczać.
-Jednak pewnej nocy spokój został brutalnie przerwany. Kacper nie wrócił do domu, a następnego dnia wiadomość o jego śmierci dotarła do Piotrka i Dominika.
-— Kto mógł to zrobić? — spytał Piotrek, nie mogąc powstrzymać drżenia w głosie.
-Dominik milczał. Jego spojrzenie było twarde i nieprzeniknione.
-— Nie wiadomo — odpowiedział w końcu. — Ale jedno jest pewne. Musimy być ostrożni. Ktoś z zewnątrz przesunął pionek na planszy… i to nie była przypadkowa ofiara.
-Piotrek poczuł lodowaty dreszcz. Świadomość, że ich świat staje się coraz bardziej niebezpieczny, wpełzła mu pod skórę. Każdy krok mógł teraz decydować o życiu albo śmierci, a granica między zaufaniem a zdradą stawała się coraz cieńsza.
-W ich świecie nikt nie był bezpieczny.`
-          },
-          11: {
-            title: "Kim ja jestem",
-            text: `Po śmierci Kacpra Piotrek zaczął odczuwać coraz większy dystans wobec Dominika. Ich drogi w interesach wciąż się przecinały, ale Piotrek coraz częściej czuł ograniczenia małego lokalnego „terenu”, który Dominik kontrolował. Coraz częściej myślał o czymś większym — o świecie, który wykraczał daleko poza ulice ich miasta.
-Pewnego wieczoru Piotrek nawiązał kontakt z grupą, która zarządzała rozprowadzaniem narkotyków w całej Polsce. Byli to ludzie, których istnienie wcześniej znał tylko z opowieści — sieć była rozległa, skomplikowana i niebezpieczna, a jej władza sięgała daleko poza granice jego rodzinnego miasta.
-Początki były trudne. Piotrek musiał udowodnić lojalność, spryt i zdolność do podejmowania ryzyka. Jego znajomość lokalnego rynku i doświadczenie z Dominikiem stały się jego przewagą. Sprzedaż rosła, a kontakty z nowymi partnerami rozszerzały się z dnia na dzień.
-Z czasem Piotrek awansował. Z małego wspólnika stał się koordynatorem dystrybucji, a potem kierownikiem regionalnym. Nauczył się zarządzać ludźmi, negocjować i przewidywać ruchy konkurencji. Jego reputacja rosła — w świecie, w którym każdy krok mógł decydować o życiu lub śmierci, Piotrek stawał się synonimem skuteczności i zimnej logiki.
-Po kilku latach jego wpływy obejmowały cały kraj. Sieć, która kiedyś wydawała się nieosiągalna, teraz była w jego rękach. Zyskał kontrolę nad przepływem narkotyków, nad ludźmi i nad pieniędzmi. Jego pozycja była niekwestionowana.
-W końcu Piotrek stał się głównym mafiozą całej sieci. Każda decyzja, każdy ruch w świecie, który kiedyś był jedynie mglistym snem, teraz zależał od niego. Ludzie słuchali jego słów, jego woli podporządkowywano losy i fortuny.
-Jednak władza miała swoją cenę. Każdy sukces niósł ze sobą ciężar odpowiedzialności, strachu i nieustannej czujności. Piotrek wiedział, że pozostanie na szczycie wymaga poświęceń, a granica między przyjacielem a wrogiem stała się cieńsza niż kiedykolwiek.
-W świecie pełnym przemocy`
-          },
-          12: {
-            title: "Ostatnie krople deszczu",
-            text: `Na szczycie było cicho. Cicho i zimno.
-Piotrek miał teraz wszystko — pieniądze, wpływy, ludzi gotowych wykonać każde jego polecenie. Był najważniejszym graczem w grze, która nie miała już dla niego tajemnic. Każdy telefon, każda paczka, każda decyzja przechodziła przez jego ręce. Wszyscy w Polsce znali jego imię, choć wypowiadali je tylko szeptem.
-Ale nocami wracały obrazy. Twarze ludzi, których skrzywdził. Cienie dawnych znajomych, wspomnienia z czasów, kiedy mżawka była tylko mżawką, a świat wydawał się prosty i kolorowy. Światło z tamtego snu sprzed lat — to, które mówiło mu, że to najpiękniejsze chwile twojego życia — teraz było dalekie, zgaszone, obce.
-Coraz częściej zamykał się w swoim gabinecie, odcinał od wszystkich. Dominik zniknął z jego życia, Iwo gdzieś się rozpłynął. Na stole leżały pieniądze i dokumenty, a on czuł tylko pustkę. Nie było już wyzwań. Nie było przyjaciół. Nie było nawet strachu.
-Pewnego wieczoru usiadł w fotelu i spojrzał w ciemność. W dłoniach obracał zimny, ciężki przedmiot. W myślach przeleciało całe jego życie — ulice z dzieciństwa, huśtawka, mżawka, czarny kot, szkoła, Iwo. Wszystko to, co kiedyś było ważne, teraz wydawało się snem.
-Przez chwilę wydawało mu się, że słyszy ten sam głos ze snu: „To są najpiękniejsze chwile twojego życia.”
-Łzy napłynęły mu do oczu. Zrozumiał, że dotarł na szczyt tylko po to, by znaleźć tam pustkę. strzelił sobie rewolwerem w głowę...
-Następnego dnia znaleziono go w gabinecie. Na biurku leżała kartka:
-„Nie zostało mi nic prócz ciszy.”
-Świat, który zbudował, runął w jednej chwili.`
-          }
-        }
-      };
-      // Sezon 2 (13 rozdziałów) - pełne treści:
-      const season2 = {
-        title: "Sezon 2",
-        chapters: {
-          1: {
-            title: "Biuro tożsamości",
-            text: `Po śmierci Piotrka nawet wiatr wydawał się inny – chłodny, przeszywający, jakby cały świat zamarł. Nagle do jego biura wszedł Samuel, jego zaufany wspólnik z mafii. Zamarł na progu, patrząc na ciało szefa. Szok i niedowierzanie malowały się na jego twarzy.
-Nie potrafił uwierzyć, że Piotrek naprawdę nie żyje. Rozpoczął desperackie dochodzenie wśród członków mafii, pytając każdego, kto mógłby coś wiedzieć – ale nikt nie miał żadnej wskazówki.
-Samuel wiedział, że musi działać szybko. Zawołał Eryka, specjalistę od „spraw sprzątających”. Eryk bez słowa wyjął telefon i zadzwonił po swoją ekipę – sprawnie zajęli się usunięciem zwłok. Policja, jak zwykle, nie dowiedziała się niczego; śmierć Piotrka pozostała tajemnicą, otoczona cieniem niepewności i strachu.`
-          },
-          2: {
-            title: "Kuzyni",
-            text: `Kuzyni Piotrka z Rosji, dowiadują się o jego śmierci i prawdziwej tożsamości. Szok szybko przeradza się w gniew. Bez wahania przyjeżdżają do Polski, by odkryć, kto stoi za jego końcem.
-Śledztwo okazuje się trudniejsze, niż sądzili — nikt nie wie nic pewnego, a zwłoki Piotrka zniknęły jakby zapadły się pod ziemię. Gdy opuszczają mroczny wieżowiec, w którym szukali odpowiedzi, zauważają Eryka i jego ekipę sprzątającą. To oni byli ostatnimi, którzy mieli kontakt z ciałem Piotrka.
-Starszy z kuzynów nie waha się ani chwili. Wyciąga pistolet, a echo strzału roznosi się po pustej okolicy. Eryk pada na ziemię, a jego ludzie zastygają w szoku. Drugi strzał przełamuje ciszę.
-Kuzyni uciekają w ciemność, a ekipa sprzątająca zostaje z nowym koszmarem na rękach — zamiast jednej ofiary, mają już dwie do zniknięcia.`
-          },
-          3: {
-            title: "Włam o pytanie",
-            text: `Po tym, jak rosyjscy kuzyni Piotrka uciekli z miejsca strzelaniny, postanowili odwiedzić jeszcze jedną osobę — jego brata, Tymona. Wiedzieli, że ich kuzyn miał z nim dawniej bliskie relacje, ale też słyszeli plotki, że coś się między nimi zepsuło.
-Wspomnienia wróciły: dzień, w którym Piotrek wrócił do domu roztrzęsiony po śmierci Kacpra. Wtedy, w przypływie szczerości, wyznał wszystko tylko Tymonowi. Ten jednak nie wytrzymał ciężaru tych słów. Od tamtej pory odciął się od brata całkowicie — nigdy więcej z nim nie rozmawiał.
-Kuzyni weszli do mieszkania Tymona i bez ogródek zapytali:
-— Powiedz nam, co wiesz o śmierci Piotrka.
-Tymon spojrzał na nich zimno. Jego głos brzmiał twardo i odcięcie:
-— Nic wam nie powiem. To nie wasza sprawa.
-Chłodna cisza zawisła w powietrzu. Kuzyni wymienili spojrzenia, a w ich oczach pojawił się gniew. Gdy wychodzili, starszy z nich kopnął w drzwi tak mocno, że zatrzęsły się futryny.
-Na klatce schodowej rozbrzmiewał tylko echo ich kroków i niewypowiedziana obietnica zemsty.`
-          },
-          4: {
-            title: "Nasze ostatnie święta",
-            text: `W pewnym domu panowała świąteczna atmosfera. Choinka migotała kolorowymi lampkami, w kominku trzaskał ogień, w tle grała spokojna muzyka, a za oknem cicho sypał śnieg. Wszystko wyglądało jak pocztówka z idealnych Świąt… dopóki ciszę nie rozdarł huk tłuczonego szkła.
-Okna rozsypały się w drobny mak, a do środka wdarli się zamaskowani napastnicy. Rozległy się krótkie, brutalne strzały, echo odbiło się od ścian, a potem nastąpiła cisza jeszcze bardziej przerażająca niż hałas sprzed chwili.
-Zbrodniarze zniknęli tak szybko, jak się pojawili, zostawiając po sobie jedynie kartkę. Na niej, dużymi literami, widniały słowa: „Raz za raz”.
-Kiedy przyjechała policja, dom już pogrążony był w milczeniu. Nie było żadnych odcisków palców, żadnych śladów. Jedynym dowodem była kartka, która zdawała się obiecywać, że to dopiero początek.`
-          },
-          5: {
-            title: "Krew",
-            text: `Ignacy siedział w ciemnym samochodzie zaparkowanym niedaleko domu, w którym jeszcze kilka minut wcześniej rozbrzmiewała świąteczna muzyka. Teraz panowała tam cisza – cisza, którą sam stworzył. Rodzina, którą Piotrek kiedyś oszczędził, już nie żyła. Ignacy wiedział, że Piotrek nigdy nie odważyłby się pociągnąć za spust. Ale Piotrek nie żył. Ktoś musiał dokończyć to, co jego kuzyn zostawił niedokończone.
-Zimny śnieg topniał na jego rękawiczkach, gdy wracał do miasta. W jego oczach nie było żalu – tylko determinacja.
-Kilka dni później Ignacy wszedł do biura, które niegdyś należało do Piotrka. Zrobił to spokojnie, jakby był u siebie. W środku czekał już Tymon, brat Piotrka, oraz Władzimierz – dawny zastępca.
-— No i co teraz? — Ignacy spojrzał prosto w oczy Władzimierza. — Piotrek nie żyje. Ludzie zaczynają gadać. Kto przejmie schedę?
-Władzimierz westchnął ciężko i rozłożył ręce.
-— Nie wiem, Ignacy… Ale jedno jest pewne. Interes nie może się zatrzymać. Ktoś musi przejąć jego miejsce.
-Ignacy uniósł brew, lekko się uśmiechając.
-— Czyli ty?
-— Tak. — Władzimierz skinął głową. — Ja biorę to na siebie. Będziemy handlować dalej. Sieć nie może runąć, bo inaczej wszyscy zginiemy.
-Tymon, oparty o ścianę, odezwał się cicho, ale stanowczo:
-— Pamiętajcie, Piotrek zapłacił najwyższą cenę. Nie popełniajcie tych samych błędów.
-Ignacy spojrzał na niego, a w jego oczach błysnęło coś, co trudno było nazwać – gniew? A może chłodna obojętność?
-— Błędy są po to, żeby je naprawiać. A ja nie zamierzam powtarzać słabości mojego kuzyna.
-W biurze zapadła ciężka cisza. Trzech mężczyzn wiedziało, że od tego dnia wszystko się zmieni.`
-          },
-          6: {
-            title: "Wracamy do gry",
-            text: `W magazynie panowała cisza, tak gęsta, że wydawało się, iż czas stanął w miejscu. Powietrze było letnie, ciężkie, pachniało kurzem, drewnem i starym żelazem. Przez zakurzone okna wpadały promienie słońca, które przecinały mrok wąskimi smugami. Każdy kąt magazynu zdawał się odcięty od świata, jakby to miejsce było zapomniane przez ludzi i przez Boga.
-Nie było słychać nic poza cichym skrzypieniem blachy na dachu, gdy wiatr poruszał zardzewiałe elementy. Cisza miała w sobie coś nienaturalnego – zbyt spokojnego, jak na miejsce, które kryło tyle tajemnic.
+<script>
+const author = "Aut. Piotr Baran\n\n";
 
-Nagle rozległ się dźwięk. Stukanie. Najpierw ciche, niemal nieśmiałe, jakby ktoś pukał w drewno palcem. Potem coraz mocniejsze, stanowcze, desperackie. Echo uderzeń niosło się po pustym wnętrzu, rozbijając ciszę na kawałki.
-I wtedy… zza jednej z przesuwnych ścian dał się słyszeć stłumiony głos. Chrapliwy, zachrypnięty, ale znajomy.
-— Halo… jest tu kto?
-To nie mogło być prawdą. A jednak.
-Za zardzewiałą blachą, ledwo żywy, ale żywy, siedział Piotrek. Ekipa sprzątająca, zamiast zakończyć jego życie, zabrała go w tajemnicy, ukrywając przed światem i przed mafią. Uratowali go, nie wiadomo z jakiego powodu – czy za pieniądze, czy z litości, czy może ktoś miał własny plan.
-Piotrek był blady, wychudzony, z oczami, które nosiły ślad wszystkich jego demonów. Powoli przeciskał się przez szczelinę, aż wreszcie upadł na chłodną podłogę magazynu.
-Oddychał ciężko, a serce waliło mu jak młot.
-Nie wiedział, gdzie jest, ani dlaczego wciąż żyje. Wiedział tylko jedno — teraz jego życie nie należy już do niego. Był cieniem człowieka, który kiedyś rządził całym krajem. I musiał zdecydować: wrócić do gry… czy zniknąć raz na zawsze.`
-          },
-          7: {
-            title: "Kariera",
-            text: `Piotrek siedział chwilę w półmroku magazynu, wciąż niepewny, czy naprawdę żyje. Każdy oddech był ciężki, a myśli rozbiegały się jak dzikie zwierzęta. Nie wiedział, co zrobić, ani dokąd pójść.
-Nagle usłyszał kroki. W drzwiach stanął Ignacy.
-— Cześć — rzucił krótko, jakby spotkali się po zwykłym dniu.
-Piotrek spojrzał na niego ostro, czując dziwne napięcie.
-— A tamta rodzina? — spytał, choć już bał się odpowiedzi.
-Ignacy nie mrugnął okiem.
-— Są skończeni.
-Piotrek poczuł, jak ziemia usuwa mu się spod nóg. Chciał coś powiedzieć, krzyknąć, ale w gardle utkwiła mu cisza. W końcu tylko skinął głową. Nie miał już siły na sprzeciw.
-Wyszli razem z magazynu. Każdy krok wydawał się cięższy od poprzedniego. Kiedy dotarli do wieżowca, w którym znajdowało się dawne biuro Piotrka, na schodach zatrzymał ich Samuel.
-— Szefie… ty żyjesz? — jego głos drżał z niedowierzania.
-Piotrek spojrzał mu w oczy.
-— Tak — odpowiedział cicho, ale stanowczo.
-Razem weszli do sali zarządu. Władzimierz, który zdążył już rozsiąść się w fotelu lidera, zamarł na ich widok. Po chwili bez słowa wstał. Piotrek usiadł z powrotem na swoim miejscu.
-I tak — historia zatoczyła krąg. Władza wróciła do tego, kto miał ją w rękach od początku.`
-          },
-          8: {
-            title: "Zazdrości i nienawiści",
-            text: `Pewnego ranka Piotrek wyszedł przed drzwi swojego biura. Na korytarzu czekał mężczyzna, którego twarz znał z dawnych czasów – Ksawery. Był starszy, zniszczony życiem, ale w jego oczach wciąż tlił się ogień doświadczenia. W świecie interesów Ksawery uchodził za starego wyjadacza, jednak to Piotrek w ostatnich latach wyprzedził go o kilka kroków.
-– Potrzebuję rady – powiedział chłodnym głosem Ksawery, zbliżając się. – Wiem, że masz wpływy, których ja już nie mam.
-Piotrek spojrzał na niego obojętnie. – Nie mam nic do powiedzeniaw tej sprawie.
-Na moment zapadła cisza. Ksawery skinął głową, jakby chciał zakończyć rozmowę. – W takim razie… dziękuję. Do widzenia.
-Ale w następnej sekundzie rzucił się gwałtownie na Piotrka, wyciągając nóż. Zanim ostrze zdążyło błysnąć, Samuel wyskoczył z korytarza, wykręcił mu rękę i wezwał ochronę wieżowca. Dwóch rosłych ochroniarzy obezwładniło Ksawerego i wyprowadziło siłą na zewnątrz, zostawiając Piotrka z uczuciem zimnego gniewu.
-Piotrek poprawił marynarkę i odwrócił się do Samuela. – Następnym razem… niech nie próbują nawet wejść do środka.
-Samuel skinął głową. – Zajmę się tym, szefie.`
-          },
-          9: {
-            title: "Porozumienie czy jednak go brak",
-            text: `Deszcz spływał po maskach samochodów jak strużki srebra, a grad bębnił o dachy niczym karabinowa salwa. Samuel wracał do domu, skulony w cieniu latarni, gdy nagle obok niego z piskiem opon zatrzymała się czarna furgonetka. Drzwi otworzyły się z trzaskiem, a dwóch zamaskowanych mężczyzn wciągnęło go do środka.
-– Ani słowa – warknął jeden, przykładając lufę do jego głowy.
-Samuel ledwie zdążył zaczerpnąć powietrza, gdy rozległ się huk. Kula przeszyła ciemność – padł pierwszy z oprawców, potem drugi. W drzwiach furgonetki stał Piotrek, mokry od deszczu, z bronią w dłoni.
-– Uważaj, Samuel! – krzyknął, celując precyzyjnie.
-Gdy ucichły ostatnie strzały, obaj wiedzieli, że to nie był przypadek. Ktoś ich wystawił.
-Noc pachniała żelazem i dymem. W biurowcu panowała cisza, aż nagle system alarmowy zawył. Samuel i Piotrek wbiegli do środka – w centrum sali leżała bomba z migającym odliczaniem.
-– Na ziemię! – wrzasnął ktoś z ochrony.
-Zanim jednak licznik zbliżył się do zera, z ciemnego korytarza wybiegł Władzimierz. Klęknął przy urządzeniu, z dłonią pewną i zimną jak stal. Po kilku sekundach ciszy usłyszano tylko klik – odliczanie ustało.
-– Gotowe – powiedział spokojnie, wycierając pot z czoła.
-O świcie Piotrek usłyszał niecierpliwy dźwięk dzwonka. Otworzył drzwi – na progu stał Tymon, blady i roztrzęsiony.
-– To wszystko wymyka się spod kontroli – powiedział ostro. – Jeśli nie przestaniesz, pójdę na policję.
-Piotrek milczał, patrząc mu prosto w oczy. W tej ciszy słychać było tylko szum deszczu za oknem.
-Wtedy z cienia wyszły dwie znajome sylwetki – rosyjscy kuzyni.
-– Mamy problem, Piotrek – rzucił jeden z nich. – I to duży.
-Piotrek spojrzał na nich chłodno. Wiedział, że ten dzień dopiero się zaczyna, a już musi podejmować decyzje.`
-          },
-          10: {
-            title: "Miłość zawsze ma koniec",
-            text: `Piotrek czuł, że działa pod presją. Myśli dudniły w głowie jak echo — wszystko wymykało się spod kontroli.
-Wsiadł do auta i pojechał do Tymona. Gdy zapukał do drzwi, otworzyła Lidia, dziewczyna jego brata. W jej oczach tlił się lęk.
-— Nie ma go — powiedziała krótko, próbując zamknąć drzwi.
-Piotrek wślizgnął się do środka.
-— Lidia, gdzie jest Tymon? — zapytał chłodno.
-Wtedy wyznała, że Tymon opowiedział jej wszystko — o mafii, o Kacprze, o tym, jak daleko to zaszło.
-— On nie chce iść na policję… ale ja pójdę, jeśli tego nie skończysz — wyszeptała. — Chcę go ratować.
-Słowa zawisły w powietrzu jak wyrok.
-Piotrek nic nie odpowiedział. Wyszedł, zamknął za sobą drzwi i wsiadł do auta.
-Przez chwilę siedział w ciszy, po czym sięgnął po telefon.
-— Eryk… mam dla was zlecenie.
-Następnego dnia Tymon wrócił do mieszkania. W salonie panowała nienaturalna cisza.
-Na stole leżała kartka. Na niej kilka słów, pisanych twardą ręką:
-„To przez ciebie Lidia nie żyje.”`
-          },
-          11: {
-            title: "Zdrajca",
-            text: `Tymon po zobaczeniu kartki zamarł. Dłonie mu drżały, kartka wypadała z palców, a on nie mógł złapać tchu. Zanim zdążył cokolwiek przemyśleć, sięgnął po telefon i zadzwonił.
-— Piotrek… przyjedź. Teraz.
-Kilka minut później Piotrek stał już w drzwiach. W mieszkaniu panowała cisza.
-— Dlaczego? — zapytał Tymon, głosem łamiącym się od gniewu i bólu. — Przecież ja ją kochałem.
-Piotrek spuścił wzrok.
-— Nie miałem wyboru… Musiałem. — Podeszedł bliżej, położył mu dłoń na ramieniu, a potem objął go jak brata. — Przepraszam.
-Nie patrząc mu w oczy, odwrócił się i wyszedł.
-Chwilę później do mieszkania wpadli kuzyni z Rosji. Ich kroki dudniły po schodach jak echo zemsty. Tymon nie zdążył nawet sięgnąć po telefon. Zanim opadł na podłogę, wiedział, że to koniec.
-Kilka godzin później Piotrek dowiedział się o wszystkim — o śmierci brata, o tym, że za wszystkim stał Ignacy. Spotkali się w starym magazynie.
-— Po co to zrobiłeś? — spytał Piotrek cicho.
-Ignacy uśmiechnął się zimno.
-— Bo nie jestem już z tobą. Współpracuję z konkurencją. To ja wysłałem ludzi po Samuela.
-Piotrek zamarł. Przez chwilę w jego oczach nie było widać gniewu — tylko pustkę.`
-          },
-          12: {
-            title: "Gdzie są krople deszczu?",
-            text: `Nic nie było już takie samo. Kuzyni Piotrka zaczęli trzymać z Ignacym, a sam Piotrek czuł, że grunt usuwa mu się spod nóg. Nie widział już sensu w ucieczkach, kłamstwach i zbrodniach — postanowił zakończyć to raz na zawsze.
-Zorganizował spotkanie w opuszczonym magazynie. Zaprosił wszystkich: konkurencję, przeciwną mafię, Ignacego i Rosjan. Miała to być rozmowa — ostatnia szansa na porozumienie.
-Gdy napięcie sięgało zenitu, Piotrek otworzył usta, by przemówić... wtedy Ignacy krzyknął tylko jedno słowo:
-— Teraz!
-Rozległ się huk. Wybuchła regularna wojna — seria za serią, krzyki, kurz i zapach prochu. Wkrótce każdy był ranny. Po kilku minutach na nogach pozostał już tylko Ignacy.
-Piotrek spojrzał na niego z gniewem i bólem.
-— Jak mogłeś mi to zrobić?! — wrzasnął, rzucając się na niego.
-Ignacy upadł, a Piotrek ściągnął mu szalik z szyi i zaczął nim dusić. Cisza po walce była przerywana tylko ich oddechami.`
-          },
-          13: {
-            title: "Krople z ekspresu",
-            text: `Piotrek nalewał sobie kawę z ekspresu, a w powietrzu unosił się zapach gorzkich ziaren i ciepła — jakby każda chwila miała smak ulgi. Wszystko już ucichło. Wojna, krzyk, zdrady – przeminęły jak sen. Krople mżawki nie spadały już na jego ramiona, bo wreszcie miał nad sobą dach i spokój, na który tak długo czekał.
-Wyszedł na balkon. Miasto spało, a z rynny skapnęła na jego dłoń jedna, samotna kropla deszczu. Spojrzał na nią w ciszy i uśmiechnął się — przypomniał sobie, jak bardzo zawsze je kochał.
-Odwrócił się powoli i wrócił do biurka. Na stole parowała kawa, a on wziął łyk, czując, że tym razem naprawdę może już odpocząć.`
-          }
-        }
-      };
-      // ---- UI referencje ----
-      const badEndingBtn = document.getElementById('badEndingBtn');
-      const slotBtn = document.getElementById('slotBtn');
-      const seasonArea = document.getElementById('seasonArea');
-      const chapterArea = document.getElementById('chapterArea');
-      const chapterContent = document.getElementById('chapterContent');
-      const slotMachine = document.getElementById('slotMachine');
-      const drawBtn = document.getElementById('drawBtn');
-      const clearBtn = document.getElementById('clearBtn');
-      const slotsDiv = document.getElementById('slots');
-      const slotMsg = document.getElementById('slotMsg');
-      const backBtn = document.getElementById('backBtn');
-      const mainMenu = document.getElementById('mainMenu');
-      // ---- Helper: clear views ----
-      function hideAllViews() {
-        seasonArea.style.display = 'none';
-        chapterArea.style.display = 'none';
-        chapterContent.style.display = 'none';
-        slotMachine.style.display = 'none';
-        backBtn.style.display = 'none';
-        mainMenu.style.display = 'flex';
-      }
-      // ---- Show seasons (only 2 seasons) ----
-      function showSeasons() {
-        mainMenu.style.display = 'none';
-        slotMachine.style.display = 'none';
-        chapterContent.style.display = 'none';
-        chapterArea.style.display = 'none';
-        seasonArea.innerHTML = '';
-        // Season 1
-        const s1 = document.createElement('button');
-        s1.className = 'season-btn';
-        s1.textContent = season1.title;
-        s1.onclick = () => showChapters(1);
-        seasonArea.appendChild(s1);
-        // Season 2
-        const s2 = document.createElement('button');
-        s2.className = 'season-btn';
-        s2.textContent = season2.title;
-        s2.onclick = () => showChapters(2);
-        seasonArea.appendChild(s2);
-        seasonArea.style.display = 'flex';
-        backBtn.style.display = 'block';
-      }
-      // ---- Show chapters for chosen season ----
-      function showChapters(seasonId) {
-        seasonArea.style.display = 'none';
-        chapterArea.innerHTML = '';
-        let chapters = (seasonId === 1) ? season1.chapters : season2.chapters;
-        for (const numStr of Object.keys(chapters)) {
-          const num = Number(numStr);
-          const b = document.createElement('button');
-          b.className = 'chapter-btn';
-          b.textContent = `Rozdział ${num} — ${chapters[num].title}`;
-          b.onclick = () => displayChapter(seasonId, num);
-          chapterArea.appendChild(b);
-        }
-        chapterArea.style.display = 'flex';
-        backBtn.style.display = 'block';
-      }
-      // ---- Display selected chapter ----
-      function displayChapter(seasonId, chapterNum) {
-        chapterArea.style.display = 'none';
-        const chapters = (seasonId === 1) ? season1.chapters : season2.chapters;
-        chapterContent.textContent = `${chapters[chapterNum].title}\n\n${chapters[chapterNum].text}`;
-        chapterContent.style.display = 'block';
-        backBtn.style.display = 'block';
-      }
-      // ---- Slot machine: weighted selection ----
-      const slotSymbols = [{
-          icon: '🍋',
-          chance: 30
-        },
-        {
-          icon: '🍊',
-          chance: 25
-        },
-        {
-          icon: '🍇',
-          chance: 20
-        },
-        {
-          icon: '🍒',
-          chance: 15
-        },
-        {
-          icon: '💰',
-          chance: 6
-        },
-        {
-          icon: '🛎️',
-          chance: 3
-        },
-        {
-          icon: '7',
-          chance: 1
-        } // we'll render as red7
-      ];
+const poems = {
+1: `pewnego razu byłem i nie byłem,
+nikt mnie nie chce
+dlatego sie okaleczyłem.
+życie jest smutne niczym zimny wiatr
 
-      function weightedPick() {
-        const r = Math.random() * 100;
-        let cum = 0;
-        for (const s of slotSymbols) {
-          cum += s.chance;
-          if (r <= cum) return s.icon;
-        }
-        return slotSymbols[slotSymbols.length - 1].icon;
-      }
+dręczy mnie i dręczy powiew tatr.
+życie jest bez sensu, ręka mi drży,
+dlatego coraz więcej jest na niej krwi.
+ukojeniu szukać. tylko w końcu gdzie?
 
-      function spinOnce() {
-        const res = [];
-        for (let i = 0; i < 3; i++) {
-          res.push(weightedPick());
-        }
-        // Render with red 7 specially
-        slotsDiv.innerHTML = res.map(x => x === '7' ? `<span class="red7">7</span>` : x).join(' ');
-        // Message logic
-        const counts = {};
-        res.forEach(r => counts[r] = (counts[r] || 0) + 1);
-        if (res.every(x => x === '7')) {
-          slotMsg.textContent = "JACKPOT! Trzy czerwone 7! 🎉";
-        } else if (Object.values(counts).some(c => c === 3)) {
-          slotMsg.textContent = "Trzy takie same! Dobra robota.";
-        } else if (Object.values(counts).some(c => c === 2)) {
-          slotMsg.textContent = "Dwie takie same — prawie jackpot!";
-        } else {
-          slotMsg.textContent = "Nic tym razem — spróbuj ponownie.";
-        }
-      }
-      // ---- Events ----
-      badEndingBtn.addEventListener('click', () => {
-        hideAllViews();
-        showSeasons();
-      });
-      slotBtn.addEventListener('click', () => {
-        hideAllViews();
-        slotMachine.style.display = 'block';
-        backBtn.style.display = 'block';
-        mainMenu.style.display = 'none';
-      });
-      drawBtn && drawBtn.addEventListener('click', spinOnce);
-      drawBtn && drawBtn.addEventListener('click', () => {}); // no-op if missing
-      drawBtn && drawBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') spinOnce();
-      });
-      document.getElementById('drawBtn').addEventListener('click', spinOnce);
-      clearBtn.addEventListener('click', () => {
-        slotsDiv.innerHTML = '🎰 🎰 🎰';
-        slotMsg.textContent = '';
-      });
-      backBtn.addEventListener('click', () => {
-        hideAllViews();
-      });
-      // Init: show main menu
-      hideAllViews();
-    </script>
-  </body>
+bo ja umiem tylko w okaleczaniu sie.
+ratunek ten jako lepszy niż nic,
+pomaga strasznie lecz dużo jest krwi,
+pochodnia ciemna zgasił ją wiatr.
 
+to jest znowu ten powiew tatr.
+gdy pochodnie znowu gasi wiatr,
+ręka czerwona tu krew i tam.
+życie znowu nie chce mnie.
+
+a życie? a życie? wykrwawia sie.`,
+
+2: `wychodze do szkoły,
+a tam straszny jest tłum.
+szary i blady jak żyletka,
+mi „tzum”.
+
+jak szary jest chodnik,
+tak moje życie jest.
+nie wiem co się dzieję,
+a głód przytłamia mnie.`,
+
+3: `Jak życie beznadziejne mnie lubić
+nie chce mnie, tak smutno mi jak w tę i we w
+znowu życie dręczy mnie`,
+
+4: `gdy zobaczyłem melsa i paru
+innych tu, znowu odzyskałem trochę tchu
+lecz tego nie było mało.`,
+
+5: `tuńczyk. tuńczyk lecz nie tuńczyk.
+kiedy tę rybe złowiłem,
+w magie świata już nie wierzyłem.`,
+
+6: `kiedy starej szafy otworzyłem drzwi,
+zobaczyłem że coś we mnie tkwi.
+
+alternatywko moja,
+dlaczego mi to zrobiłaś?`
+};
+
+function showPoem(nr, btn) {
+    document.querySelectorAll('.poem-btn')
+        .forEach(b => b.classList.remove('active'));
+
+    btn.classList.add('active');
+
+    const box = document.getElementById("poemBox");
+    box.innerHTML = `
+        <div class="author">${author}</div>
+        <div class="poem-text">${poems[nr]}</div>
+    `;
+}
+</script>
+
+</body>
 </html>
